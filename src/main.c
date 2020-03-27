@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <getopt.h>
+#include <signal.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
@@ -20,7 +21,7 @@ const struct option long_options[] = {
 };
 
 static const char* const usage_template =
-    "OpxFlow version 1.0.0\n"
+    "OpxFlow version %s\n"
     "OpxFlow is a high performance MQTT broker.\n\n"
     "usage: %s [ options ]\n\n"
     "-a, --address ADDR    Bind to local address (by default, bind to all local addresses).\n"
@@ -32,7 +33,15 @@ const char* program_name;
 
 void print_usage()
 {
-    printf(usage_template, program_name);
+    printf(usage_template, VERSION, program_name);
+}
+
+void sig_handler(int signo)
+{
+    if (signo == SIGINT)
+    {
+        LOG_INFO("OpxFlow version %s terminating", VERSION);
+    }
 }
 
 int main(int argc, char* argv[])
@@ -49,6 +58,8 @@ int main(int argc, char* argv[])
     char* end;
 
     program_name = argv[0];
+
+    signal(SIGINT, sig_handler);
 
     do
     {
@@ -89,6 +100,8 @@ int main(int argc, char* argv[])
         }
     }
     while(next_option != -1);
+
+    LOG_INFO("OpxFlow version %s starting", VERSION);
 
     int listener_fd;
     listener_fd = server_create_listener(local_address, port);

@@ -1,3 +1,5 @@
+include config.mk
+
 EXECUTABLE=opxflow
 BIN_DIR=bin
 SOURCES = src/main.c \
@@ -16,8 +18,10 @@ SOURCES = src/main.c \
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
-RUNTIME_PATH = 
-CFLAGS  = -I src -Wall -Wno-unused-but-set-variable -Wno-unused-variable
+CFLAGS  = -I src \
+		  -Wall -Wno-unused-but-set-variable -Wno-unused-variable \
+		  -D VERSION="\"${VERSION}\""
+
 LDFLAGS =
 LIB_PATH =
 LIBS =
@@ -26,7 +30,7 @@ all: $(EXECUTABLE)
 
 $(EXECUTABLE):  $(OBJECTS)
 	@ mkdir -p $(BIN_DIR)
-	@ $(CC) $(CFLAGS) -o $(BIN_DIR)/$@ $(RUNTIME_PATH) $(OBJECTS) $(LIB_PATH) $(LIBS)
+	@ $(CC) $(CFLAGS) -o $(BIN_DIR)/$@ $(OBJECTS) $(LIB_PATH) $(LIBS)
 	@ echo "LD " $@
 
 %.o : %.c
