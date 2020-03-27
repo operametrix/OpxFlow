@@ -35,5 +35,5 @@ $(EXECUTABLE):  $(OBJECTS)
 
 .PHONY: clean
 clean:
-	@ rm -f $(OBJECTS) opxflow
-	@ echo "RM " $(OBJECTS) opxflow
+	@ rm -rf $(OBJECTS) $(EXECUTABLE) $(BIN_DIR)
+	@ echo "RM " $(OBJECTS) $(EXECUTABLE) $(BIN_DIR)
