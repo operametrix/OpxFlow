@@ -1,0 +1,29 @@
+#ifndef __MQTT_PROTOCOL_H__
+#define __MQTT_PROTOCOL_H__
+
+#define PROTOCOL_NAME_v31 "MQIsdp"
+#define PROTOCOL_VERSION_v31 3
+
+#define PROTOCOL_NAME "MQTT"
+
+#define PROTOCOL_VERSION_v311 4
+#define PROTOCOL_VERSION_v5 5
+
+/* Message types */
+#define CMD_CONNECT 0x10
+#define CMD_CONNACK 0x20
+#define CMD_PUBLISH 0x30
+#define CMD_PUBACK 0x40
+#define CMD_PUBREC 0x50
+#define CMD_PUBREL 0x60
+#define CMD_PUBCOMP 0x70
+#define CMD_SUBSCRIBE 0x80
+#define CMD_SUBACK 0x90
+#define CMD_UNSUBSCRIBE 0xA0
+#define CMD_UNSUBACK 0xB0
+#define CMD_PINGREQ 0xC0
+#define CMD_PINGRESP 0xD0
+#define CMD_DISCONNECT 0xE0
+#define CMD_AUTH 0xF0
+
+#endif
