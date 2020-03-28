@@ -5,6 +5,7 @@ BIN_DIR=bin
 SOURCES = src/main.c \
 	  src/log/log.c \
 	  src/server/server.c \
+	  src/config/config.c \
 	  src/backend/backend.c \
 	  src/packets/packets.c \
 	  src/packets/encoder/packets_encode_connack.c \

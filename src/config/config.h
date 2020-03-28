@@ -22,6 +22,15 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-void config_load_from_file(char *path);
+#include <stdint.h>
+
+typedef struct {
+    char *hostname;
+    uint32_t port;
+} opxflow_config_t;
+
+extern opxflow_config_t config;
+
+int config_load_from_file(char *path);
 
 #endif
