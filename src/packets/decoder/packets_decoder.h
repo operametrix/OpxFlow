@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <unistd.h>
 
+int decode_variable_byte(uint8_t *buffer, size_t index, uint32_t *value);
+
 int packets_decode_connect(int fd, uint8_t *packet, size_t length);
 int packets_decode_publish(int fd, uint8_t *packet, size_t length);
 int packets_decode_subscribe(int fd, uint8_t *packet, size_t length);

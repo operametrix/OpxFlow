@@ -21,6 +21,7 @@
 
 #include <stdbool.h>
 #include "packets/packets.h"
+#include "packets/decoder/packets_decoder.h"
 #include "packets/encoder/packets_encoder.h"
 #include "log/log.h"
 #include "backend/backend.h"

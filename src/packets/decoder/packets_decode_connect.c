@@ -20,7 +20,9 @@
  */
 
 #include <stdbool.h>
+#include "protocol/mqtt_protocol.h"
 #include "packets/packets.h"
+#include "packets/decoder/packets_decoder.h"
 #include "packets/encoder/packets_encoder.h"
 #include "log/log.h"
 
@@ -42,6 +44,10 @@ int packets_decode_connect(int fd, uint8_t *packet, size_t length)
     bool clean_start_flag = false;
     bool reserved_flag = false;
     uint16_t keep_alive = 0;
+    uint32_t properties_field_length = 0;
+    uint8_t properties_field_name = 0;
+    uint32_t will_properties_field_length = 0;
+    uint8_t will_properties_field_name = 0;
     uint16_t payload_field_length = 0;
     char client_id[23];
     char username[100];
@@ -138,7 +144,73 @@ int packets_decode_connect(int fd, uint8_t *packet, size_t length)
     /* Pass keep alive field */
     packet_index += 2;
 
-    /* TODO: Add CONNECT Properties */
+    /* Parse CONNECT Properties */
+    if( protocol_version == 5 )
+    {
+        if( decode_variable_byte(packet, packet_index, &properties_field_length) != 0 )
+        {
+            LOG_ERROR("failed to parse property length Variable Byte");
+            return 0;
+        }
+
+        /* Pass properties length field */
+        packet_index += 1;
+
+        for( i=0; i<properties_field_length; )
+        {
+            properties_field_name = packet[packet_index];
+
+            /* Pass property field name */
+            packet_index += 1;
+            i += 1;
+
+            switch(properties_field_name)
+            {
+                case PROP_SESSION_EXPIRY_INTERVAL:
+                    packet_index += 4;
+                    i += 4;
+                    break;
+
+                case PROP_RECEIVE_MAXIMUM:
+                    packet_index += 2;
+                    i += 2;
+                    break;
+
+                case PROP_MAXIMUM_PACKET_SIZE:
+                    packet_index += 4;
+                    i += 4;
+                    break;
+
+                case PROP_TOPIC_ALIAS_MAXIMUM:
+                    packet_index += 2;
+                    i += 2;
+                    break;
+
+                case PROP_REQUEST_RESPONSE_INFORMATION:
+                    packet_index += 1;
+                    i += 1;
+                    break;
+
+                case PROP_REQUEST_PROBLEM_INFORMATION:
+                    packet_index += 1;
+                    i += 1;
+                    break;
+
+                case PROP_USER_PROPERTY:
+                    /* TODO: parse String Pair */
+                    break;
+
+                case PROP_AUTHENTICATION_METHOD:
+                    /* TODO: parse Binary Data */
+                    break;
+
+                default:
+                    LOG_ERROR("unknown property field");
+                    return 0;
+                    break;
+            }
+        }
+    }
 
     payload_field_length = (packet[packet_index] << 8) + packet[packet_index + 1];
 
@@ -173,6 +245,67 @@ int packets_decode_connect(int fd, uint8_t *packet, size_t length)
 
     /* Pass clientID field */
     packet_index += payload_field_length;
+
+    if( will_flag == 1 )
+    {
+        if( protocol_version == 5 )
+        {
+            if( decode_variable_byte(packet, packet_index, &will_properties_field_length) != 0 )
+            {
+                LOG_ERROR("failed to parse will property length Variable Byte");
+                return 0;
+            }
+
+            /* Pass properties length field */
+            packet_index += 1;
+
+            for( i=0; i<will_properties_field_length; )
+            {
+                will_properties_field_name = packet[packet_index];
+
+                /* Pass property field name */
+                packet_index += 1;
+                i += 1;
+
+                switch(properties_field_name)
+                {
+                    case PROP_WILL_DELAY_INTERVAL:
+                        packet_index += 4;
+                        i += 4;
+                        break;
+
+                    case PROP_PAYLOAD_FORMAT_INDICATOR:
+                        packet_index += 1;
+                        i += 1;
+                        break;
+
+                    case PROP_MESSAGE_EXPIRY_INTERVAL:
+                        packet_index += 4;
+                        i += 4;
+                        break;
+
+                    case PROP_CONTENT_TYPE:
+                        /* TODO: parse UTF-8 string */
+                        break;
+
+                    case PROP_RESPONSE_TOPIC:
+                        /* TODO: parse UTF-8 string */
+                        break;
+
+                    case PROP_CORRELATION_DATA:
+                        /* TODO: parse Binary Data */
+                        break;
+
+                    case PROP_USER_PROPERTY:
+                        /* TODO: parse String Pair */
+                        break;
+                }
+            }
+        }
+
+        /* TODO: parse will topic */
+        /* TODO: parse will payload */
+    }
 
     if( username_flag == 1 )
     {

@@ -26,16 +26,18 @@
 void packets_encode_connack(int fd)
 {
     uint8_t control_packet_type = CMD_CONNACK;
-    uint8_t remaining_length = 2;
+    uint8_t remaining_length = 3;
     uint8_t connect_acknowledge_flags = 0;
-    uint8_t connect_reason_code = 0;
+    uint8_t connect_reason_code = CONNACK_SUCCESS;
+    uint8_t topic_alias_maximum = 0;
 
-    uint8_t packet[4] = {
+    uint8_t packet[5] = {
         control_packet_type,
         remaining_length,
         connect_acknowledge_flags,
-        connect_reason_code
+        connect_reason_code,
+        topic_alias_maximum
     };
 
-    write(fd, packet, 4);
+    write(fd, packet, 5);
 }

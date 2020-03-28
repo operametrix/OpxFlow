@@ -21,6 +21,7 @@
 
 #include <stdbool.h>
 #include "packets/packets.h"
+#include "packets/decoder/packets_decoder.h"
 #include "packets/encoder/packets_encoder.h"
 #include "log/log.h"
 #include "backend/backend.h"
@@ -70,7 +71,7 @@ int packets_decode_subscribe(int fd, uint8_t *packet, size_t length)
 
     if( packet_index != length )
     {
-        LOG_ERROR("Extra bytes in the publish packet");
+        LOG_ERROR("Extra bytes in the subscribe packet");
         return 0;
     }
 

@@ -11,6 +11,7 @@ SOURCES = src/main.c \
 	  src/packets/encoder/packets_encode_pingresp.c \
 	  src/packets/encoder/packets_encode_publish.c \
 	  src/packets/encoder/packets_encode_suback.c \
+	  src/packets/decoder/packets_decoder.c \
 	  src/packets/decoder/packets_decode_connect.c \
 	  src/packets/decoder/packets_decode_pingreq.c \
 	  src/packets/decoder/packets_decode_publish.c \
